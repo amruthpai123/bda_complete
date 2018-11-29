@@ -1,35 +1,26 @@
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
-import org.apache.spark.rdd.RDD
+import scala.io.Source
 
 object wordcount
 {
 	def main(args:Array[String])
 	{
-		val filename=args(0)
-		val conf= new SparkConf()
-			 .setAppName("name")
-			 .setMaster("local[*]")
-			 
-		val cs= new SparkContext(conf)
+		val filename= args(0)
+		val wordcount= scala.collection.mutable.Map[String,Int]().withDefaultValue(0)
+		for(line<-Source.fromFile(filename).getLines)
+		{
+			for(word<-line.split(" "))
+			{
+				val str= word.toLowerCase
+				wordcount(str)+=1
+				
+			
+						
+			}
 		
-		val wordrdd = cs.textFile(filename)
-				.flatMap(_.split(" "))
-		val lowerrdd= wordrdd.map(x=>x.toLowerCase)
 		
-		val wordcountrdd= lowerrdd.map((_,1)).reduceByKey(_+_)
-		
-		val frequentrdd = wordcountrdd.filter(x=>x._2>4)
-		
-		frequentrdd.saveAsTextFile("wordcount")
-	
-	
-	
-	
+		}
+	print(wordcount)
 	}
 
 
-
-
 }
-
